@@ -13,7 +13,7 @@ import tensorflow as tf
 import dnnlib
 import dnnlib.tflib as tflib
 from dnnlib.tflib.autosummary import autosummary
-import pickle
+import _pickle as cPickle
 import config
 import train
 from training import dataset
@@ -151,7 +151,7 @@ def training_loop(
             network_pkl = misc.locate_network_pkl(resume_run_id, resume_snapshot)
             print('Loading networks from "%s"...' % network_pkl)
             with open(network_pkl, 'rb') as file:
-                G, D, Gs = pickle.load(file, encoding='latin1')
+                G, D, Gs = cPickle.load(file, encoding='latin1')
         else:
             print('Constructing networks...')
             G = tflib.Network('G', num_channels=training_set.shape[0], resolution=training_set.shape[1], label_size=training_set.label_size, **G_args)
