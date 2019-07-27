@@ -7,13 +7,14 @@
 
 """Main training script."""
 
-import os
+import os, sys
 import numpy as np
 import tensorflow as tf
 import dnnlib
 import dnnlib.tflib as tflib
 from dnnlib.tflib.autosummary import autosummary
 from dnnlib.tflib import tfutil
+sys.modules['tfutil'] = tfutil
 import pickle
 import config
 import train
