@@ -7,13 +7,13 @@
 
 """Main training script."""
 
-import os, sys
+import os
 import numpy as np
 import tensorflow as tf
 import dnnlib
 import dnnlib.tflib as tflib
 from dnnlib.tflib.autosummary import autosummary
-import _pickle as cPickle
+
 import config
 import train
 from training import dataset
@@ -130,12 +130,12 @@ def training_loop(
     mirror_augment          = False,    # Enable mirror augment?
     drange_net              = [-1,1],   # Dynamic range used when feeding image data to the networks.
     image_snapshot_ticks    = 1,        # How often to export image snapshots?
-    network_snapshot_ticks  = 1,       # How often to export network snapshots?
+    network_snapshot_ticks  = 10,       # How often to export network snapshots?
     save_tf_graph           = False,    # Include full TensorFlow computation graph in the tfevents file?
     save_weight_histograms  = False,    # Include weight histograms in the tfevents file?
-    resume_run_id           = "/content/stylegan/network-snapshot-011155.pkl",     # Run ID or network pkl to resume training from, None = start from scratch.
+    resume_run_id           = None,     # Run ID or network pkl to resume training from, None = start from scratch.
     resume_snapshot         = None,     # Snapshot index to resume training from, None = autodetect.
-    resume_kimg             = 11155,      # Assumed training progress at the beginning. Affects reporting and training schedule.
+    resume_kimg             = 0.0,      # Assumed training progress at the beginning. Affects reporting and training schedule.
     resume_time             = 0.0):     # Assumed wallclock time at the beginning. Affects reporting.
 
     # Initialize dnnlib and TensorFlow.
@@ -150,8 +150,7 @@ def training_loop(
         if resume_run_id is not None:
             network_pkl = misc.locate_network_pkl(resume_run_id, resume_snapshot)
             print('Loading networks from "%s"...' % network_pkl)
-            with open(network_pkl, 'rb') as file:
-                G, D, Gs = cPickle.load(file, encoding='latin1')
+            G, D, Gs = misc.load_pkl(network_pkl)
         else:
             print('Constructing networks...')
             G = tflib.Network('G', num_channels=training_set.shape[0], resolution=training_set.shape[1], label_size=training_set.label_size, **G_args)
