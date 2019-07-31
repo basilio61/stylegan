@@ -68,7 +68,7 @@ def training_schedule(
     D_lrate_dict            = {},       # Resolution-specific overrides.
     lrate_rampup_kimg       = 0,        # Duration of learning rate ramp-up.
     tick_kimg_base          = 160,      # Default interval of progress snapshots.
-    tick_kimg_dict          = {4: 160, 8:140, 16:120, 32:100, 64:80, 128:60, 256:40, 512:30, 1024:20}): # Resolution-specific overrides.
+    tick_kimg_dict          = {4: 160, 8:140, 16:120, 32:100, 64:80, 128:2, 256:1, 512:1, 1024:1}): # Resolution-specific overrides.
 
     # Initialize result dict.
     s = dnnlib.EasyDict()
