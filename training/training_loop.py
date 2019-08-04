@@ -142,7 +142,7 @@ def training_loop(
     try:
         resume_kimg = misc.load_pkl(resume_dir)
     except (OSError, IOError) as e:
-        resume_kimg = 7120.6
+        resume_kimg = 7123.7
     # Initialize dnnlib and TensorFlow.
     ctx = dnnlib.RunContext(submit_config, train)
     tflib.init_tf(tf_config)
