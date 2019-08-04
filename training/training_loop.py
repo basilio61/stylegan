@@ -135,9 +135,14 @@ def training_loop(
     save_weight_histograms  = False,    # Include weight histograms in the tfevents file?
     resume_run_id           = '/content/drive/My Drive/network-final.pkl', # Run ID or network pkl to resume training from, None = start from scratch.
     resume_snapshot         = None,     # Snapshot index to resume training from, None = autodetect.
-    resume_kimg             = 7116.6,   # Assumed training progress at the beginning. Affects reporting and training schedule.
+    resume_kimg             = 0,   # Assumed training progress at the beginning. Affects reporting and training schedule.
     resume_time             = 0.0):     # Assumed wallclock time at the beginning. Affects reporting.
-
+    
+    resume_dir = '/content/drive/My Drive/resume.pkl'
+    try:
+        resume_kimg = misc.load_pkl(resume_dir)
+    except (OSError, IOError) as e:
+        resume_kimg = 7120.6
     # Initialize dnnlib and TensorFlow.
     ctx = dnnlib.RunContext(submit_config, train)
     tflib.init_tf(tf_config)
@@ -260,8 +265,8 @@ def training_loop(
                 #misc.save_image_grid(grid_fakes, os.path.join(submit_config.run_dir, 'fakes%06d.png' % (cur_nimg // 1000)), drange=drange_net, grid_size=grid_size)
             if cur_tick % network_snapshot_ticks == 0 or done or cur_tick == 1:
                 pkl = os.path.join(submit_config.run_dir, 'network-snapshot-%06d.pkl' % (cur_nimg // 1000))
-                #misc.save_pkl((G, D, Gs), pkl)
-                misc.save_pkl((G, D, Gs), '/content/drive/My Drive/network-final.pkl')
+                misc.save_pkl(cur_nimg / 1000.0, resume_dir)
+                misc.save_pkl((G, D, Gs), resume_run_id)
                 metrics.run(pkl, run_dir=submit_config.run_dir, num_gpus=submit_config.num_gpus, tf_config=tf_config)
 
             # Update summaries and RunContext.
